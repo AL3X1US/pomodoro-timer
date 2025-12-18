@@ -1,6 +1,6 @@
 <div class="flex flex-col items-center justify-center p-8 shadow-xl bg-white rounded-3xl border border-gray-100" 
   x-data="{ 
-    timeLeft: 3, 
+    timeLeft: 1500, 
     timer: null,
     running: false,
     paused: false,
@@ -28,7 +28,6 @@
       $wire.incrementPomodoro(tempoTrascorso, 'Pomodoro');
 
       alert('Ottimo lavoro! Sessione completata');
-      alert('Tempo trascorso: ' + tempoTrascorso + ' secondi');
       this.timeSelected = 1500;
       this.timeLeft = 1500;
       this.paused = false;
