@@ -15,4 +15,12 @@ class PomodoroService
       'date' => now()
     ])->count();
   }
+
+  public function showLogs(){
+    return Auth::user()
+    ->pomodoros()
+    ->latest()
+    ->limit(10)
+    ->get();
+  }
 }
