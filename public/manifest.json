@@ -1,0 +1,23 @@
+{
+  "name": "Pomodoro Timer",
+  "short_name": "Pomodoro",
+  "description": "Un semplice timer pomodoro per la produttività.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "via.placeholder.com",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "via.placeholder.com",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

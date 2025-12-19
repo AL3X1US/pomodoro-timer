@@ -1,9 +1,12 @@
+@use('App\Enums\TimerPreset')
+
 <div class="flex flex-col items-center justify-center p-8 shadow-xl bg-white rounded-3xl border border-gray-100" x-data="{ 
     timeLeft: 1500, 
     timer: null,
     running: false,
     paused: false,
     timeSelected: 1500,
+    description: '',
 
     init() {
       this.showLogs();
@@ -28,13 +31,14 @@
       this.pause();
       // Qui 'parliamo' con la classe PHP del Backend
       let tempoTrascorso = this.timeSelected - this.timeLeft;
-      $wire.incrementPomodoro(tempoTrascorso, 'Pomodoro');
+      $wire.incrementPomodoro(tempoTrascorso, this.description || 'Pomodoro');
 
       alert('Ottimo lavoro! Sessione completata');
       this.timeSelected = 1500;
       this.timeLeft = 1500;
       this.paused = false;
       this.running = false;
+      this.description = '';
     },
 
     setTime(time) {
@@ -54,6 +58,16 @@
     <span x-text="Math.floor(timeLeft / 60).toString().padStart(2, '0')"></span>:<span
       x-text="(timeLeft % 60).toString().padStart(2, '0')"></span>
   </div>
+
+  <!-- descrizione -->
+  <div class="text-gray-800 mb-8">
+    <label>
+      <span class="sr-only">Tipo di attività</span>
+    </label>
+    <input type="text" placeholder="Attività che stai svolgendo" x-model="description"
+      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+  </div>
+
 
   <!-- pulsanti pausa e play -->
   <div class="flex gap-4">
@@ -98,43 +112,52 @@
       class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-xl ring-1 ring-black/5 focus:outline-none"
       x-cloak>
       <div class="py-1 border-none">
-        <button @click="setTime(300); open = false"
-          class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white">5
-          Minuti</button>
-        <button @click="setTime(1500); open = false"
-          class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white">25
-          Minuti</button>
+        @forelse(TimerPreset::cases() as $preset)
+          <button @click="setTime({{ $preset->value }}); open = false"
+            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-500 hover:text-white">{{ $preset->value / 60 }}
+            Minuti</button>
+        @empty
+        @endforelse
       </div>
     </div>
   </div>
 
   <div class="mt-10 pt-6 border-t w-full text-center">
-    <p class="text-gray-500 text-sm">Sessioni ultimate: <span
-        class="font-bold text-indigo-600">{{ $count }}</span></p>
+    <p class="text-gray-500 text-sm">Sessioni ultimate: <span class="font-bold text-indigo-600">{{ $count }}</span></p>
   </div>
 
   <!-- lista timer per utente -->
   <div class="mt-8 w-full max-w-md">
-    <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Recenti Focus Logs</h3>
+    <h3 class="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Pomodori recenti</h3>
 
     <div class="space-y-3">
+      <!-- per ogni pomodoro -->
       @forelse($logs as $log)
         <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100 shadow-sm">
           <div class="flex items-center gap-3">
+            <!-- icona pomodoro -->
             <div class="bg-indigo-100 p-2 rounded-lg">
               <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
             </div>
+            <!-- data pomodoro -->
             <div>
-              <p class="text-sm font-medium text-gray-900">{{ $log->created_at->diffForHumans() }}</p>
-              <p class="text-xs text-gray-500">Durata sessione</p>
+              <p class="text-sm font-medium text-gray-900">{{ $log->created_at->locale('it')->diffForHumans() }}</p>
             </div>
           </div>
-          <div class="text-right">
+          <div>
+            <p class="text-sm font-medium text-gray-400">Descrizione</p>
             <span class="text-indigo-600 font-bold">
-              {{ floor($log->duration / 60) }}m {{ $log->duration % 60 }}s
+              {{ $log->description }}
+            </span>
+          </div>
+          <!-- durata pomodoro -->
+          <div class="text-right">
+            <p class="text-sm font-medium text-gray-400">Durata</p>
+            <span class="text-indigo-600 font-bold">
+              {{ (floor($log->duration / 60) == 0) ? '' : floor($log->duration / 60) . 'm' }} {{ $log->duration % 60 }}s
             </span>
           </div>
         </div>

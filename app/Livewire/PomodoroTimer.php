@@ -7,10 +7,12 @@ use App\Services\PomodoroService;
 use Log;
 
 
+
 class PomodoroTimer extends Component
 {
     public $count = 0;
     public $logs = [];
+
 
     public function mount()
     {
