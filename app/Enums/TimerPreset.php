@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum TimerPreset : int 
 {
+    case treSecondi = 3;
     case cinqueMinuti = 300;
     case dieciMinuti = 600;
     case quindiciMinuti = 900;
