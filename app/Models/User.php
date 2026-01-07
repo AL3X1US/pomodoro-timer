@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PomodoroLog::class);
     }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
 }

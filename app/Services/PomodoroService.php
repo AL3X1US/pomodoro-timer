@@ -11,7 +11,7 @@ class PomodoroService
   {
     return Auth::user()->pomodoros()->create([
       'duration' => $seconds,
-      'description' => $description,
+      'description' => $description ?? 'Pomodoro',
       'date' => now()
     ])->count();
   }
